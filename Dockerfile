@@ -34,7 +34,7 @@ RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download
   } && chmod a+x /usr/bin/yq
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=6.1.0-M11
+ARG EXO_VERSION=6.1.0-clustering-SNAPSHOT
 
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
@@ -68,9 +68,8 @@ RUN mkdir -p ${EXO_DATA_DIR}         && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DAT
 # Install eXo Platform
 RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
   if [ ! -n "${DOWNLOAD_URL}" ]; then \
-  echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \
-  EXO_VERSION_SHORT=$(echo ${EXO_VERSION} | awk -F "\." '{ print $1"."$2}'); \
-  DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-${EXO_VERSION}.zip"; \
+  echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \  
+  DOWNLOAD_URL="https://repository.exoplatform.org/service/local/artifact/maven/redirect?r=exo-private-snapshots&g=com.exoplatform.platform.distributions&a=plf-enterprise-tomcat-standalone&v=${EXO_VERSION}&p=zip"; \
   fi && \
   curl ${PARAMS} -sS -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
   unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
